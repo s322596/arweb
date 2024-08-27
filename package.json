@@ -1,0 +1,22 @@
+{
+  "name": "webarjs",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "homepage": "https://<your-github-username>.github.io/arweb",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1",
+    "vite": "^5.4.1"
+  },
+  "dependencies": {
+    "@snap/camera-kit": "^0.21.0"
+  }
+}
+
