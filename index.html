@@ -4,19 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Camera Kit Web App</title>
-    <style>
-      #canvas {
-        transform: scaleX(-1); /* Mirror the canvas for the front camera */
-      }
-    </style>
   </head>
   <body>
     <canvas id="canvas"></canvas>
-    <div>
-      <button onclick="switchCamera('front')">Front Camera</button>
-      <button onclick="switchCamera('back')">Back Camera</button>
-    </div>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
-
