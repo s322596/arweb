@@ -1,6 +1,5 @@
 import {
   bootstrapCameraKit,
-  CameraKitSession,
   createMediaStreamSource,
   Transform2D,
 } from '@snap/camera-kit';
@@ -9,10 +8,17 @@ const liveRenderTarget = document.getElementById('canvas');
 const flipCamera = document.getElementById('flip');
 const cameraSelect = document.getElementById('cameras');
 const lensSelect = document.getElementById('lenses');
+const videoContainer = document.getElementById('video-container');
+const videoTarget = document.getElementById('video');
+const startRecordingButton = document.getElementById('start');
+const stopRecordingButton = document.getElementById('stop');
+const downloadButton = document.getElementById('download');
 
 let isBackFacing = true;
 let mediaStream;
 let session;
+let mediaRecorder;
+let downloadUrl;
 
 (async function () {
   const cameraKit = await bootstrapCameraKit({
@@ -34,6 +40,9 @@ let session;
 
   // Bind flip camera functionality
   bindFlipCamera(session);
+
+  // Bind recording functionality
+  bindRecorder();
 })();
 
 function bindFlipCamera(session) {
@@ -115,3 +124,48 @@ async function attachLensesToSelect(lenses, session) {
   });
 }
 
+function bindRecorder() {
+  startRecordingButton.addEventListener('click', () => {
+    startRecordingButton.disabled = true;
+    stopRecordingButton.disabled = false;
+    downloadButton.disabled = true;
+    videoContainer.style.display = 'none';
+
+    const mediaStream = liveRenderTarget.captureStream(30);
+
+    mediaRecorder = new MediaRecorder(mediaStream);
+    mediaRecorder.addEventListener('dataavailable', (event) => {
+      if (!event.data.size) {
+        console.warn('No recorded data available');
+        return;
+      }
+
+      const blob = new Blob([event.data]);
+
+      downloadUrl = window.URL.createObjectURL(blob);
+      downloadButton.disabled = false;
+
+      videoTarget.src = downloadUrl;
+      videoContainer.style.display = 'block';
+    });
+
+    mediaRecorder.start();
+  });
+
+  stopRecordingButton.addEventListener('click', () => {
+    startRecordingButton.disabled = false;
+    stopRecordingButton.disabled = true;
+
+    mediaRecorder?.stop();
+  });
+
+  downloadButton.addEventListener('click', () => {
+    const link = document.createElement('a');
+
+    link.setAttribute('style', 'display: none');
+    link.href = downloadUrl;
+    link.download = 'camera-kit-web-recording.webm';
+    link.click();
+    link.remove();
+  });
+}

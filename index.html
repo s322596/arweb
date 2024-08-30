@@ -13,6 +13,17 @@
     </div>
     <canvas id="canvas"></canvas>
     <button id="flip">Switch to Back Camera</button>
+
+    <section>
+      <button id="start">Start Recording</button>
+      <button id="stop" disabled>Stop Recording</button>
+    </section>
+    <section id="video-container" style="display: none">
+      <video loop controls autoplay id="video"></video>
+      <div>
+        <button id="download">Download Video</button>
+      </div>
+    </section>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
