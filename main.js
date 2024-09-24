@@ -21,28 +21,34 @@ let mediaRecorder;
 let downloadUrl;
 
 (async function () {
-  const cameraKit = await bootstrapCameraKit({
-    apiToken: 'eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzI0NzM4NzEzLCJzdWIiOiI2NDYwYjg5Ni1hNzIwLTRhMjMtOGMyZi1hZTVlZDg2MTI4YTJ-U1RBR0lOR34zM2JhZjRiNC1hMTE0LTRhMTUtYmQxZi02YzE3OWI5YWI3MzIifQ.yNIU2DJUtajP3UEq8yN1_qcfYmRUOBUot32MQGDJcjw',
-  });
+  try {
+    const cameraKit = await bootstrapCameraKit({
+      apiToken: 'eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzI0NzM4NzEzLCJzdWIiOiI2NDYwYjg5Ni1hNzIwLTRhMjMtOGMyZi1hZTVlZDg2MTI4YTJ-U1RBR0lOR34zM2JhZjRiNC1hMTE0LTRhMTUtYmQxZi02YzE3OWI5YWI3MzIifQ.yNIU2DJUtajP3UEq8yN1_qcfYmRUOBUot32MQGDJcjw',
+    });
 
-  session = await cameraKit.createSession({ liveRenderTarget });
+    session = await cameraKit.createSession({ liveRenderTarget });
 
-  const { lenses } = await cameraKit.lensRepository.loadLensGroups(['a29e3bd4-6725-431f-b2c9-fa1a64e59abc']);
-  
-  // Populate the lenses dropdown
-  attachLensesToSelect(lenses, session);
+    const { lenses } = await cameraKit.lensRepository.loadLensGroups(['a29e3bd4-6725-431f-b2c9-fa1a64e59abc']);
+    
+    // Populate the lenses dropdown
+    attachLensesToSelect(lenses, session);
 
-  // Set the initial lens
-  await session.applyLens(lenses[0]);
+    // Set the initial lens
+    await session.applyLens(lenses[0]);
 
-  // Populate the camera dropdown and set the initial camera
-  attachCamerasToSelect(session);
+    // Populate the camera dropdown and set the initial camera
+    attachCamerasToSelect(session);
 
-  // Bind flip camera functionality
-  bindFlipCamera(session);
+    // Bind flip camera functionality
+    bindFlipCamera(session);
 
-  // Bind recording functionality
-  bindRecorder();
+    // Bind recording functionality
+    bindRecorder();
+
+  } catch (err) {
+    console.error('Error initializing camera kit:', err);
+    alert('Unable to access camera. Please allow camera permissions.');
+  }
 })();
 
 function bindFlipCamera(session) {
@@ -65,46 +71,59 @@ async function updateCamera(session, deviceId) {
     mediaStream.getVideoTracks()[0].stop();
   }
 
-  mediaStream = await navigator.mediaDevices.getUserMedia({
-    video: {
-      deviceId: deviceId || undefined,
-      facingMode: isBackFacing ? 'environment' : 'user',
-    },
-  });
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        deviceId: deviceId || undefined,
+        facingMode: isBackFacing ? 'environment' : 'user',
+        width: { ideal: 1280 }, // Mobile-friendly resolution
+        height: { ideal: 720 },
+      },
+      audio: true, // Enable audio recording
+    });
 
-  const source = createMediaStreamSource(mediaStream, {
-    cameraType: isBackFacing ? 'back' : 'front',
-  });
+    const source = createMediaStreamSource(mediaStream, {
+      cameraType: isBackFacing ? 'back' : 'front',
+    });
 
-  await session.setSource(source);
+    await session.setSource(source);
 
-  if (!isBackFacing) {
-    source.setTransform(Transform2D.MirrorX);  // Mirror the front camera
+    if (!isBackFacing) {
+      source.setTransform(Transform2D.MirrorX);  // Mirror the front camera for better user experience
+    }
+
+    session.play();
+  } catch (err) {
+    console.error('Error updating camera:', err);
+    alert('Error accessing camera. Please try again.');
   }
-
-  session.play();
 }
 
 async function attachCamerasToSelect(session) {
-  const devices = await navigator.mediaDevices.enumerateDevices();
-  const cameras = devices.filter(({ kind }) => kind === 'videoinput');
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const cameras = devices.filter(({ kind }) => kind === 'videoinput');
 
-  cameraSelect.innerHTML = ''; // Clear previous options
-  cameras.forEach((camera, index) => {
-    const option = document.createElement('option');
-    option.value = camera.deviceId;
-    option.text = camera.label || `Camera ${index + 1}`;
-    cameraSelect.appendChild(option);
-  });
+    cameraSelect.innerHTML = ''; // Clear previous options
+    cameras.forEach((camera, index) => {
+      const option = document.createElement('option');
+      option.value = camera.deviceId;
+      option.text = camera.label || `Camera ${index + 1}`;
+      cameraSelect.appendChild(option);
+    });
 
-  cameraSelect.addEventListener('change', async (event) => {
-    const deviceId = event.target.value;
-    await updateCamera(session, deviceId);
-  });
+    cameraSelect.addEventListener('change', async (event) => {
+      const deviceId = event.target.value;
+      await updateCamera(session, deviceId);
+    });
 
-  // Set the initial camera
-  if (cameras.length > 0) {
-    await updateCamera(session, cameras[0].deviceId);
+    // Set the initial camera
+    if (cameras.length > 0) {
+      await updateCamera(session, cameras[0].deviceId);
+    }
+  } catch (err) {
+    console.error('Error fetching cameras:', err);
+    alert('Error fetching cameras. Please try again.');
   }
 }
 
@@ -147,6 +166,11 @@ function bindRecorder() {
 
       videoTarget.src = downloadUrl;
       videoContainer.style.display = 'block';
+
+      // Ensure video playback is user-triggered on mobile
+      videoTarget.addEventListener('click', () => {
+        videoTarget.play();
+      });
     });
 
     mediaRecorder.start();
@@ -164,7 +188,7 @@ function bindRecorder() {
 
     link.setAttribute('style', 'display: none');
     link.href = downloadUrl;
-    link.download = 'camera-kit-web-recording.webm';
+    link.download = 'camera-kit-web-recording.mp4';
     link.click();
     link.remove();
   });
