@@ -137,12 +137,6 @@ function bindRecorder() {
     const options = {
       mimeType: 'video/mp4'
     };
-    
-    // Check if the specified MIME type is supported
-    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-      console.error(`${options.mimeType} is not supported. MP4 format cannot be used.`);
-      return; // Exit if MP4 is not supported
-    }
 
     mediaRecorder = new MediaRecorder(mediaStream, options);
     mediaRecorder.addEventListener('dataavailable', (event) => {
