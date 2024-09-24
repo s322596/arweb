@@ -5,7 +5,6 @@ header {
     text-align: center; 
     border-bottom: 4px solid #FF6B6B; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-    margin: 30px; 
 }
 
 header h1 {
@@ -19,8 +18,6 @@ header p {
     margin: 10px; 
     opacity: 0.9; 
 }
-
-
 
 
 
