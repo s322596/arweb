@@ -1,0 +1,44 @@
+/* headerstyle.css */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif; /* Use a clean sans-serif font */
+}
+
+header {
+    background: linear-gradient(135deg, #6D5BFF, #FF6B6B); /* Cool gradient background */
+    color: white; /* White text color */
+    padding: 20px 0; /* Vertical padding for header */
+    text-align: center; /* Center-align the text */
+    border-bottom: 4px solid #FF6B6B; /* Accent border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+header h1 {
+    font-size: 2.5em; /* Larger font size for the main title */
+    margin: 0; /* Remove default margin */
+    letter-spacing: 1px; /* Add spacing between letters */
+}
+
+header p {
+    font-size: 1.2em; /* Slightly larger font size for the description */
+    margin: 10px 0 0; /* Add margin to the top, no margin on the bottom */
+    opacity: 0.9; /* Slight transparency for a modern feel */
+}
+
+button {
+    background-color: #FF6B6B; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove default border */
+    border-radius: 25px; /* Rounded corners */
+    padding: 10px 20px; /* Padding inside the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 1em; /* Font size */
+    transition: background-color 0.3s ease; /* Smooth background transition */
+}
+
+button:hover {
+    background-color: #6D5BFF; /* Change background on hover */
+}
+
+
+
