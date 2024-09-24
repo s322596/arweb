@@ -133,14 +133,25 @@ function bindRecorder() {
 
     const mediaStream = liveRenderTarget.captureStream(30);
 
-    mediaRecorder = new MediaRecorder(mediaStream);
+    // Try to create a MediaRecorder with MP4 mime type
+    const options = {
+      mimeType: 'video/mp4' // Request MP4 format
+    };
+    
+    // Check if the specified MIME type is supported
+    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+      console.warn(`${options.mimeType} is not supported. Falling back to webm.`);
+      delete options.mimeType; // Fallback to default
+    }
+
+    mediaRecorder = new MediaRecorder(mediaStream, options);
     mediaRecorder.addEventListener('dataavailable', (event) => {
       if (!event.data.size) {
         console.warn('No recorded data available');
         return;
       }
 
-      const blob = new Blob([event.data]);
+      const blob = new Blob([event.data], { type: options.mimeType || 'video/webm' });
 
       downloadUrl = window.URL.createObjectURL(blob);
       downloadButton.disabled = false;
@@ -164,7 +175,7 @@ function bindRecorder() {
 
     link.setAttribute('style', 'display: none');
     link.href = downloadUrl;
-    link.download = 'camera-kit-web-recording.webm';
+    link.download = 'camera-kit-web-recording.mp4'; // Update to MP4 format
     link.click();
     link.remove();
   });
