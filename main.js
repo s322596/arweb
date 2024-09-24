@@ -147,6 +147,34 @@ function bindRecorder() {
 
       videoTarget.src = downloadUrl;
       videoContainer.style.display = 'block';
+
+      // Detect if it's an iOS device
+      if (isIOS()) {
+        // Convert Blob to base64 for iOS download compatibility
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = function () {
+          const base64data = reader.result;
+          downloadButton.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = base64data;
+            link.download = 'camera-kit-web-recording.webm';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          });
+        };
+      } else {
+        downloadButton.addEventListener('click', () => {
+          const link = document.createElement('a');
+          link.setAttribute('style', 'display: none');
+          link.href = downloadUrl;
+          link.download = 'camera-kit-web-recording.webm';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        });
+      }
     });
 
     mediaRecorder.start();
@@ -158,14 +186,10 @@ function bindRecorder() {
 
     mediaRecorder?.stop();
   });
+}
 
-  downloadButton.addEventListener('click', () => {
-    const link = document.createElement('a');
-
-    link.setAttribute('style', 'display: none');
-    link.href = downloadUrl;
-    link.download = 'camera-kit-web-recording.webm';
-    link.click();
-    link.remove();
-  });
+// Helper function to detect iOS devices
+function isIOS() {
+  return /iP(hone|od|ad)/.test(navigator.platform) ||
+    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
 }
