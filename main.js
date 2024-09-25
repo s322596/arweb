@@ -174,3 +174,13 @@ function bindRecorder() {
     link.remove();
   });
 }
+
+// Hide the camera dropdown on mobile devices
+
+function isMobileDevice() {
+  return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+if (isMobileDevice()) {
+  document.getElementById('cameras').style.display = 'none';
+}
