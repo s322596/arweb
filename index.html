@@ -20,23 +20,41 @@
     <canvas id="canvas"></canvas>
     <button id="flip">Switch to Back Camera</button>
 
+    <!-- Countdown display -->
+    <section id="countdown-display" style="display: none;">
+      <h3 id="countdown-text"></h3>
+    </section>
+
+    <!-- Timer Selection -->
     <section>
-      <button id="start">Start Recording</button>
-      <button id="stop" disabled>Stop Recording</button>
+      <label for="timer-select">Set Timer: </label>
+      <select id="timer-select">
+        <option value="0">No Timer</option>
+        <option value="3">3 seconds</option>
+        <option value="5">5 seconds</option>
+        <option value="10">10 seconds</option>
+      </select>
     </section>
 
     <section>
       <button id="capture">Take Picture</button>
     </section>
 
-    <!-- Preview Section -->
+    <section>
+      <button id="start">Start Recording</button>
+      <button id="stop" disabled>Stop Recording</button>
+    </section>
+
     <section id="image-preview-section" style="display: none;">
       <h3>Image Preview</h3>
       <img id="image-preview" alt="Preview" style="max-width: 100%; height: auto;"/>
-      <button id="download-image">Download Image</button>
+      <div>
+        <button id="download-image">Download Image</button>
+      </div>
     </section>
 
     <section id="video-container" style="display: none;">
+      <h3>Video Preview</h3>
       <video loop controls autoplay id="video"></video>
       <div>
         <button id="download">Download Video</button>

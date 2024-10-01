@@ -20,6 +20,11 @@ const imagePreviewSection = document.getElementById('image-preview-section');
 const imagePreview = document.getElementById('image-preview');
 const downloadImageButton = document.getElementById('download-image');
 
+// Elements for timer functionality
+const timerSelect = document.getElementById('timer-select');
+const countdownDisplay = document.getElementById('countdown-display');
+const countdownText = document.getElementById('countdown-text');
+
 let isBackFacing = true;
 let mediaStream;
 let session;
@@ -133,79 +138,92 @@ async function attachLensesToSelect(lenses, session) {
   });
 }
 
-// Capture a picture from the canvas and preview it
+// Capture a picture from the canvas with a timer
 function bindCapture() {
   captureButton.addEventListener('click', () => {
     const canvas = document.getElementById('canvas');
-    
-    // Capture the current content of the canvas as an image
-    const imageData = canvas.toDataURL('image/png');
+    const timerValue = parseInt(timerSelect.value, 10);
 
-    // Set the preview image source to the captured image data
-    imagePreview.src = imageData;
-    
-    // Show the preview section
-    imagePreviewSection.style.display = 'block';
-    
-    // Enable download functionality for the captured image
-    downloadImageButton.addEventListener('click', () => {
-      const link = document.createElement('a');
-      link.href = imageData;
-      link.download = 'ar-snapshot.png';  // File name for the downloaded image
-      link.click();
-    });
+    if (timerValue > 0) {
+      // Display countdown
+      countdownDisplay.style.display = 'block';
+      let countdown = timerValue;
+
+      const countdownInterval = setInterval(() => {
+        countdownText.innerText = countdown;
+        countdown--;
+
+        if (countdown < 0) {
+          clearInterval(countdownInterval);
+          countdownDisplay.style.display = 'none';
+
+          // Capture the image after the countdown
+          captureImage(canvas);
+        }
+      }, 1000);
+    } else {
+      // No timer, capture the image immediately
+      captureImage(canvas);
+    }
+  });
+}
+
+// Helper function to capture the image
+function captureImage(canvas) {
+  // Capture the current content of the canvas as an image
+  const imageData = canvas.toDataURL('image/png');
+
+  // Set the preview image source to the captured image data
+  imagePreview.src = imageData;
+
+  // Show the preview section
+  imagePreviewSection.style.display = 'block';
+
+  // Enable download functionality for the captured image
+  downloadImageButton.addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.href = imageData;
+    link.download = 'ar-snapshot.png'; // File name for the downloaded image
+    link.click();
   });
 }
 
 function bindRecorder() {
   startRecordingButton.addEventListener('click', () => {
+    videoContainer.style.display = 'none';
+    imagePreviewSection.style.display = 'none';
     startRecordingButton.disabled = true;
     stopRecordingButton.disabled = false;
-    downloadButton.disabled = true;
-    videoContainer.style.display = 'none';
 
-    const mediaStream = liveRenderTarget.captureStream(30);
+    mediaRecorder = new MediaRecorder(mediaStream);
 
-    // Create a MediaRecorder with MP4 mime type
-    const options = {
-      mimeType: 'video/mp4'
+    const chunks = [];
+    mediaRecorder.ondataavailable = function (event) {
+      if (event.data.size > 0) {
+        chunks.push(event.data);
+      }
     };
 
-    mediaRecorder = new MediaRecorder(mediaStream, options);
-    mediaRecorder.addEventListener('dataavailable', (event) => {
-      if (!event.data.size) {
-        console.warn('No recorded data available');
-        return;
-      }
-
-      const blob = new Blob([event.data], { type: options.mimeType });
-
-      downloadUrl = window.URL.createObjectURL(blob);
-      downloadButton.disabled = false;
-
+    mediaRecorder.onstop = function () {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      downloadUrl = URL.createObjectURL(blob);
       videoTarget.src = downloadUrl;
+
       videoContainer.style.display = 'block';
-    });
+      downloadButton.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = 'ar-video.webm';  // File name for the downloaded video
+        link.click();
+      });
+    };
 
     mediaRecorder.start();
   });
 
   stopRecordingButton.addEventListener('click', () => {
+    mediaRecorder.stop();
     startRecordingButton.disabled = false;
     stopRecordingButton.disabled = true;
-
-    mediaRecorder?.stop();
-  });
-
-  downloadButton.addEventListener('click', () => {
-    const link = document.createElement('a');
-
-    link.setAttribute('style', 'display: none');
-    link.href = downloadUrl;
-    link.download = 'camera-kit-recording.mp4';
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   });
 }
