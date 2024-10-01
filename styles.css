@@ -62,3 +62,33 @@ canvas {
     display: none;
   }
 }
+
+#video-container,
+#image-preview-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  width: 100%;
+}
+
+#image-preview,
+#video {
+  max-width: 80%;
+  height: auto;
+  border-radius: 10px;
+}
+
+#image-preview-section img,
+#video-container video {
+  display: block;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  #image-preview,
+  #video {
+    width: 90%;
+  }
+}
