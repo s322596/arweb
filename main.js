@@ -14,6 +14,12 @@ const startRecordingButton = document.getElementById('start');
 const stopRecordingButton = document.getElementById('stop');
 const downloadButton = document.getElementById('download');
 
+// New elements for image capture and preview
+const captureButton = document.getElementById('capture');
+const imagePreviewSection = document.getElementById('image-preview-section');
+const imagePreview = document.getElementById('image-preview');
+const downloadImageButton = document.getElementById('download-image');
+
 let isBackFacing = true;
 let mediaStream;
 let session;
@@ -43,6 +49,9 @@ let downloadUrl;
 
   // Bind recording functionality
   bindRecorder();
+
+  // Bind capture functionality
+  bindCapture();
 })();
 
 function bindFlipCamera(session) {
@@ -124,6 +133,30 @@ async function attachLensesToSelect(lenses, session) {
   });
 }
 
+// Capture a picture from the canvas and preview it
+function bindCapture() {
+  captureButton.addEventListener('click', () => {
+    const canvas = document.getElementById('canvas');
+    
+    // Capture the current content of the canvas as an image
+    const imageData = canvas.toDataURL('image/png');
+
+    // Set the preview image source to the captured image data
+    imagePreview.src = imageData;
+    
+    // Show the preview section
+    imagePreviewSection.style.display = 'block';
+    
+    // Enable download functionality for the captured image
+    downloadImageButton.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.href = imageData;
+      link.download = 'ar-snapshot.png';  // File name for the downloaded image
+      link.click();
+    });
+  });
+}
+
 function bindRecorder() {
   startRecordingButton.addEventListener('click', () => {
     startRecordingButton.disabled = true;
@@ -169,9 +202,10 @@ function bindRecorder() {
 
     link.setAttribute('style', 'display: none');
     link.href = downloadUrl;
-    link.download = 'camera-kit-web-recording.mp4'; 
+    link.download = 'camera-kit-recording.mp4';
+
+    document.body.appendChild(link);
     link.click();
-    link.remove();
+    document.body.removeChild(link);
   });
 }
-

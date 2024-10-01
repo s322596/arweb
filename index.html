@@ -24,12 +24,25 @@
       <button id="start">Start Recording</button>
       <button id="stop" disabled>Stop Recording</button>
     </section>
-    <section id="video-container" style="display: none">
+
+    <section>
+      <button id="capture">Take Picture</button>
+    </section>
+
+    <!-- Preview Section -->
+    <section id="image-preview-section" style="display: none;">
+      <h3>Image Preview</h3>
+      <img id="image-preview" alt="Preview" style="max-width: 100%; height: auto;"/>
+      <button id="download-image">Download Image</button>
+    </section>
+
+    <section id="video-container" style="display: none;">
       <video loop controls autoplay id="video"></video>
       <div>
         <button id="download">Download Video</button>
       </div>
     </section>
+
     <script type="module" src="/main.js"></script>
   </body>
 </html>
