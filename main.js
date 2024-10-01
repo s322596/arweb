@@ -195,7 +195,10 @@ function bindRecorder() {
     startRecordingButton.disabled = true;
     stopRecordingButton.disabled = false;
 
-    mediaRecorder = new MediaRecorder(mediaStream);
+    // Capture the media stream from the canvas
+    const canvas = document.getElementById('canvas');
+    const stream = canvas.captureStream(30); 
+    mediaRecorder = new MediaRecorder(stream);
 
     const chunks = [];
     mediaRecorder.ondataavailable = function (event) {
@@ -213,7 +216,7 @@ function bindRecorder() {
       downloadButton.addEventListener('click', () => {
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.download = 'ar-video.mp4';  // File name for the downloaded video
+        link.download = 'ar-video.mp4'; 
         link.click();
       });
     };
