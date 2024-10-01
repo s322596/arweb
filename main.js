@@ -183,7 +183,7 @@ function captureImage(canvas) {
   downloadImageButton.addEventListener('click', () => {
     const link = document.createElement('a');
     link.href = imageData;
-    link.download = 'ar-snapshot.png'; // File name for the downloaded image
+    link.download = 'ar-snapshot.png'; 
     link.click();
   });
 }
