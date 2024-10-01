@@ -61,6 +61,11 @@ canvas {
   #cameras {
     display: none;
   }
+
+  #image-preview,
+  #video {
+    width: 90%;
+  }
 }
 
 #video-container,
@@ -86,9 +91,19 @@ canvas {
   margin: 0 auto;
 }
 
-@media (max-width: 768px) {
-  #image-preview,
-  #video {
-    width: 90%;
-  }
+section {
+  text-align: center;
+}
+
+h2 {
+  color: #ffbdd8;
+}
+
+label {
+  color: #ffffff; 
+  font-size: 1.2em;
+}
+
+#countdown-text {
+  color: #ffffff; 
 }
