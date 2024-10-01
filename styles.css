@@ -76,6 +76,8 @@ canvas {
   justify-content: center;
   margin-top: 20px;
   width: 100%;
+  border: 2px solid #ddd;
+  border-radius: 10px;
 }
 
 #image-preview,
@@ -83,12 +85,16 @@ canvas {
   max-width: 80%;
   height: auto;
   border-radius: 10px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
 }
 
 #image-preview-section img,
 #video-container video {
   display: block;
   margin: 0 auto;
+  border: 2px solid #ddd;
+  border-radius: 10px;
 }
 
 section {
