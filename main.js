@@ -205,7 +205,7 @@ function bindRecorder() {
     };
 
     mediaRecorder.onstop = function () {
-      const blob = new Blob(chunks, { type: 'video/webm' });
+      const blob = new Blob(chunks, { type: 'video/mp4' });
       downloadUrl = URL.createObjectURL(blob);
       videoTarget.src = downloadUrl;
 
@@ -213,7 +213,7 @@ function bindRecorder() {
       downloadButton.addEventListener('click', () => {
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.download = 'ar-video.webm';  // File name for the downloaded video
+        link.download = 'ar-video.mp4';  // File name for the downloaded video
         link.click();
       });
     };
