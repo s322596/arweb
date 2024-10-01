@@ -75,9 +75,6 @@ canvas {
   align-items: center;
   justify-content: center;
   margin-top: 20px;
-  width: 32%;
-  border: 2px solid #ddd;
-  border-radius: 10px;
 }
 
 #image-preview,
