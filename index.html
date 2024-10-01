@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AR Web App</title>
-    <script type="module" crossorigin src="/arweb/assets/index-CLMCAuZ8.js"></script>
+    <script type="module" crossorigin src="/arweb/assets/index-C_rqNef3.js"></script>
     <link rel="stylesheet" crossorigin href="/arweb/assets/index-YxWN4Djq.css">
   </head>
   <body>
@@ -24,11 +24,24 @@
       <button id="start">Start Recording</button>
       <button id="stop" disabled>Stop Recording</button>
     </section>
-    <section id="video-container" style="display: none">
+
+    <section>
+      <button id="capture">Take Picture</button>
+    </section>
+
+    <!-- Preview Section -->
+    <section id="image-preview-section" style="display: none;">
+      <h3>Image Preview</h3>
+      <img id="image-preview" alt="Preview" style="max-width: 100%; height: auto;"/>
+      <button id="download-image">Download Image</button>
+    </section>
+
+    <section id="video-container" style="display: none;">
       <video loop controls autoplay id="video"></video>
       <div>
         <button id="download">Download Video</button>
       </div>
     </section>
+
   </body>
 </html>
